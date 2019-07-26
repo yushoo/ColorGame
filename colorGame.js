@@ -10,6 +10,7 @@ var h1 = document.querySelector("h1");
 var resetButton = document.querySelector("#reset");
 var modeButtons = document.querySelectorAll(".mode");
 
+
 //first method to be called when the web page starts
 init();
 
@@ -17,14 +18,16 @@ init();
 function init(){
 	setupModeButtons();
 	setupSquares();
-	reset();
+    reset();
 }
 
 function setupModeButtons(){
     for(var i = 0; i < modeButtons.length; i++){
         modeButtons[i].addEventListener("click", function(){
+            // removes styling from both game mode buttons
             modeButtons[0].classList.remove("selected");
             modeButtons[1].classList.remove("selected");
+            // adds back the selected styling on the one selected by the click event listener
             this.classList.add("selected");
             // ternary operator: first part is the condition, next two parts are conditions
             this.textContent === "Easy" ? numberSquares =3: numberSquares = 6;
@@ -38,13 +41,26 @@ function setupSquares(){
         //add click listeners to squares
             squares[i].addEventListener("click", function(){
                 //grab color of clicked square
-                var clickedColor = this.style.background;
+                /*!!!! 
+                    Because The domObj.style only returns styles that are set inline using the style attribute.
+                    For styles that come from a CSS file you need to use something like: window.getComputedStyle
+                */
+                // var clickedColor = this.style.backgroundColor;
+                // console.log(this.style.backgroundColor);
+                // alert(this.style.background);
+
+                var elem = this;
+                var clickedColor = window.getComputedStyle(elem,null).getPropertyValue("background-color");
+                //console.log(clickedColor);
                 //compare color to pickedColor
+                //alert(clickedColor + " "+ pickedColor)
                 if(clickedColor === pickedColor){
                     messageDisplay.textContent = "Correct!";
                     resetButton.textContent = "Play Again?"
                     changeColors(clickedColor);
                     h1.style.background = clickedColor;
+                    //console.log("HEY THIS IS THE RIGHT COLOR");
+                    //alert("clicked");
                 } else {
                     this.style.background = "#232323";
                     messageDisplay.textContent = "Try Again"
